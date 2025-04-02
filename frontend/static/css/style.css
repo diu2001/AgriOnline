@@ -1,0 +1,20 @@
+/* Eventos próximos da colheita (7 dias ou menos) */
+.fc-event-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Eventos em andamento */
+.fc-event-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* Tooltip personalizado */
+.fc-event-tooltip {
+    font-size: 0.9em;
+    padding: 5px;
+    background: #333;
+    color: white;
+    border-radius: 3px;
+}

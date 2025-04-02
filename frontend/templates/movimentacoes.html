@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Movimentações{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h2 class="h4 mb-0">
+            <i class="fas fa-exchange-alt mr-2"></i> Movimentações
+        </h2>
+    </div>
+    <div class="card-body">
+        <form id="form-movimentacao">
+            <div class="form-row">
+                <!-- Campo Produto -->
+                <div class="form-group col-md-4">
+                    <label>Produto</label>
+                    <input type="text" class="form-control" name="produto" required>
+                </div>
+
+                <!-- Campo Setor -->
+                <div class="form-group col-md-3">
+                    <label>Setor</label>
+                    <input type="text" class="form-control" name="setor" required>
+                </div>
+
+                <!-- Campo Data -->
+                <div class="form-group col-md-3">
+                    <label>Data</label>
+                    <input type="date" class="form-control" name="data" required>
+                </div>
+            </div>
+
+            <!-- Botão de Submit -->
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus-circle mr-2"></i> Registrar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/movimentacoes.js') }}"></script>
+{% endblock %}

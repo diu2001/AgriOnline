@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Culturas Ativas -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-leaf me-2"></i> Culturas Ativas
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Cultura</th>
+                            <th>Setor</th>
+                            <th>Canteiro</th>
+                            <th>Dias para Colheita</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cultura in culturas_ativas %}
+                        <tr>
+                            <td>{{ cultura.nome }}</td>
+                            <td>{{ cultura.setor_numero }}</td>
+                            <td>{{ cultura.canteiro_numero }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'danger' if cultura.dias_restantes <= 7 else 'success' }}">
+                                    {{ cultura.dias_restantes|round|int }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Nenhuma cultura ativa</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendário -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-calendar-alt me-2"></i> Calendário de Culturas
+        </div>
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        initialView: 'dayGridMonth',
+        locale: 'pt-br',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,dayGridWeek'
+        },
+        events: '/api/culturas-ativas',
+        eventDataTransform: function(event) {
+            const endDate = new Date(event.data_plantio);
+            endDate.setDate(endDate.getDate() + parseInt(event.dias_colheita));
+            
+            return {
+                title: `${event.nome} (Setor ${event.setor})`,
+                start: event.data_plantio,
+                end: endDate,
+                color: event.dias_restantes <= 7 ? '#dc3545' : '#28a745'
+            };
+        },
+        eventClick: function(info) {
+            alert(`Cultura: ${info.event.title}\n` +
+                  `Status: ${info.event.backgroundColor === '#dc3545' ? 'URGENTE' : 'Normal'}`);
+        }
+    });
+    calendar.render();
+});
+</script>
+{% endblock %}

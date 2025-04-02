@@ -1,0 +1,31 @@
+from flask import Flask, render_template
+import sqlite3
+
+app = Flask(__name__)
+
+@app.route('/')
+def dashboard():
+    # Conecta ao banco e busca culturas ativas
+    conn = sqlite3.connect('agricultura.db')
+    cursor = conn.cursor()
+    
+    # Consulta para culturas ativas (ajuste conforme sua necessidade)
+    cursor.execute("""
+        SELECT 
+            c.nome, 
+            s.numero AS setor, 
+            ct.canteiro_numero AS canteiro,
+            c.dias_colheita - (julianday('now') - julianday(m.data)) AS dias_restantes
+        FROM canteiros ct
+        JOIN culturas c ON ct.cultura_id = c.id
+        JOIN setores s ON ct.setor_numero = s.numero
+        JOIN movimentacoes m ON ct.cultura_id = m.cultura_id AND m.tipo = 'Plantio'
+        WHERE ct.cultura_id IS NOT NULL
+    """)
+    culturas_ativas = cursor.fetchall()
+    
+    conn.close()
+    return render_template('index.html', culturas_ativas=culturas_ativas)
+
+if __name__ == '__main__':
+    app.run(debug=True)
