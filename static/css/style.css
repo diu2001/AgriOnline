@@ -1,0 +1,41 @@
+/* style.css */
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    border-right: 1px solid #dee2e6;
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    margin: 3px 0;
+    color: #495057 !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    transform: translateX(5px);
+}
+
+.nav-link.active {
+    background-color: #28a745 !important;
+    color: white !important;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão Voltar */
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white !important;
+}
+
+/* Adicionando o ajuste para o formulário */
+.col-md-50 {
+    margin-left: -20px; /* Ajuste este valor conforme necessário */
+}

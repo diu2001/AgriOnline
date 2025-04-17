@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h5 mb-0"><i class="fas fa-exchange-alt me-2"></i> Registrar Movimentação</h1>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('movimentacoes') }}">
+                        <div class="mb-4">
+                            <label for="tipo_produto" class="form-label fs-5">Tipo de Produto</label>
+                            <select class="form-select" id="tipo_produto" name="tipo_produto" required>
+                                <option value="Adubo">Adubo</option>
+                                <option value="Defensivo">Defensivo</option>
+                            </select>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fs-5">Setor(es)</label>
+                                <div class="setor-canteiro-container">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="todos_setores" value="todos">
+                                        <label class="form-check-label" for="todos_setores">Todos</label>
+                                    </div>
+                                    {% for setor in setores %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="setor" value="{{ setor['id'] }}">
+                                            <label class="form-check-label" for="setor_{{ setor['id'] }}">{{ setor['nome'] }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fs-5">Canteiro(s)</label>
+                                <div class="setor-canteiro-container">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="todos_canteiros" value="todos">
+                                        <label class="form-check-label" for="todos_canteiros">Todos</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {% for canteiro in canteiros[:(canteiros|length // 2)] %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="canteiro" value="{{ canteiro }}">
+                                                    <label class="form-check-label" for="canteiro_{{ canteiro }}">{{ canteiro }}</label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% for canteiro in canteiros[(canteiros|length // 2):] %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="canteiro" value="{{ canteiro }}">
+                                                    <label class="form-check-label" for="canteiro_{{ canteiro }}">{{ canteiro }}</label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="classe" class="form-label fs-5">Classe do Defensivo</label>
+                                <select class="form-select" id="classe" name="classe">
+                                    <option value="">Todas</option>
+                                    {% for classe in classes %}
+                                        <option value="{{ classe }}">{{ classe }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="produto" class="form-label fs-5">Produto</label>
+                                <select class="form-select" id="produto" name="produto" required>
+                                    {% for defensivo in defensivos %}
+                                        <option value="{{ defensivo['nome_comercial'] }}">{{ defensivo['nome_comercial'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="quantidade" class="form-label fs-5">Quantidade Aplicada</label>
+                                <input type="number" class="form-control" id="quantidade" name="quantidade" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="unidade_medida" class="form-label fs-5">Unidade de Medida</label>
+                                <select class="form-select" id="unidade_medida" name="unidade_medida" required>
+                                    <option value="Grs.">Grs.</option>
+                                    <option value="Ml.">Ml.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="data" class="form-label fs-5">Data</label>
+                            <input type="date" class="form-control" id="data" name="data" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="cultura_id" class="form-label fs-5">Cultura (opcional)</label>
+                            <select class="form-select" id="cultura_id" name="cultura_id">
+                                <option value="">Selecione a Cultura</option>
+                                {% for cultura in culturas %}
+                                    <option value="{{ cultura['id'] }}">{{ cultura['nome'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5 mt-3">
+                            <i class="fas fa-check me-2"></i> Registrar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajuste específico para a página de movimentações
+        const mainElement = document.querySelector('main.col-md-9');
+        if (mainElement) {
+            mainElement.style.marginLeft = '-700px'; // Ajuste conforme necessário
+            mainElement.style.marginTop = '-30px'; // Ajuste conforme necessário
+        }
+    });
+
+    document.getElementById('todos_setores').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[name="setor"]');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+
+    document.getElementById('todos_canteiros').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[name="canteiro"]');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>
+
+{% endblock %}

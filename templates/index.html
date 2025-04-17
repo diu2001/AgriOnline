@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Dashboard</h2>
+    <div id="calendar" style="width: 100%;"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                hiddenDays: [0],
+                events: '/api/culturas-ativas',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                },
+                buttonText: {
+                    today: 'Hoje',
+                    month: 'Mês',
+                    week: 'Semana',
+                    day: 'Dia'
+                },
+                allDayText: 'Dia inteiro',
+                moreLinkText: 'mais',
+                noEventsText: 'Nenhum evento para exibir',
+                viewDidMount: function(info) {
+                    info.el.querySelectorAll('.fc-col-header-cell').forEach(function(element) {
+                        element.style.height = '78px';
+                    });
+                    info.el.querySelectorAll('.fc-col-header-cell-cushion').forEach(function(element) {
+                        element.style.fontSize = '1.82em';
+                    });
+                },
+                dayHeadersFormat: {
+                  month: 'long',
+                  weekday: 'short',
+                  day: 'numeric'
+                }
+            });
+            calendar.render();
+
+            // Adiciona um manipulador de eventos ao botão "Culturas"
+            var culturasButton = document.querySelector('nav ul li:nth-child(3) a'); // Seleciona o botão "Culturas"
+            culturasButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Impede o comportamento padrão do link
+                window.location.href = "{{ url_for('culturas') }}"; // Redireciona para a página de culturas
+            });
+        });
+    </script>
+{% endblock %}

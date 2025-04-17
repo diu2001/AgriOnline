@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes da Cultura: {{ cultura.nome }}{% endblock %}
+
+{% block content %}
+    <h1>Detalhes da Cultura: {{ cultura.nome }}</h1>
+    <p>Ciclo: {{ cultura.ciclo }} dias</p>
+
+    <h2>Histórico de Locais de Plantio:</h2>
+    {% if locais_cultura %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Setor</th>
+                    <th>Canteiro</th>
+                    <th>Data de Plantio</th>
+                    <th>Data Prevista Colheita</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for local in locais_cultura %}
+                    <tr>
+                        <td>{{ local.setor_nome }}</td>
+                        <td>{{ local.canteiro_numero }}</td>
+                        <td>{{ local.data_plantio|format_datetime }}</td>
+                        <td>{{ local.data_prevista_colheita|format_datetime }}</td>
+                        <td>{% if local.ativo == 1 %}Ativo{% else %}Inativo{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Esta cultura ainda não foi plantada em nenhum local.</p>
+    {% endif %}
+
+    <a href="{{ url_for('culturas') }}" class="btn btn-secondary mt-3">Voltar para Culturas</a>
+{% endblock %}

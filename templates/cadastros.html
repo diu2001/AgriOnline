@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastros{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-edit me-2"></i> Cadastros</h1>
+</div>
+
+<div class="mb-4">
+    <p class="lead">Selecione o tipo de cadastro que deseja realizar:</p>
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary me-2" onclick="mostrarFormulario('cultura')"><i class="fas fa-seedling me-2"></i> Cultura</button>
+        <button type="button" class="btn btn-outline-primary me-2" onclick="mostrarFormulario('canteiro')"><i class="fas fa-layer-group me-2"></i> Canteiro</button>
+        <button type="button" class="btn btn-outline-primary me-2" onclick="mostrarFormulario('setor')"><i class="fas fa-map-marker-alt me-2"></i> Setor</button>
+        <button type="button" class="btn btn-outline-primary me-2" onclick="mostrarFormulario('defensivo')"><i class="fas fa-spray-can me-2"></i> Defensivo</button>
+        <button type="button" class="btn btn-outline-primary" onclick="mostrarFormulario('doenca_praga')"><i class="fas fa-bug me-2"></i> Doença/Praga</button>
+    </div>
+</div>
+
+<div id="formulario-cadastro">
+    </div>
+
+<script>
+    function mostrarFormulario(tipo) {
+        const formularioDiv = document.getElementById('formulario-cadastro');
+        formularioDiv.innerHTML = ''; // Limpa qualquer formulário anterior
+
+        let formularioHTML = '';
+
+        if (tipo === 'cultura') {
+            formularioHTML = `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-seedling me-2"></i> Nova Cultura</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('adicionar_cultura') }}">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nome" class="form-label">Nome da Cultura</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="ciclo" class="form-label">Ciclo (dias)</label>
+                                    <input type="number" class="form-control" id="ciclo" name="ciclo" value="30" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-3">
+                                <i class="fas fa-save me-2"></i> Salvar Cultura
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        } else if (tipo === 'canteiro') {
+            formularioHTML = `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i> Novo Canteiro</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('adicionar_canteiro') }}">
+                            <div class="mb-3">
+                                <label for="canteiro_numero" class="form-label">Número do Canteiro</label>
+                                <input type="number" class="form-control" id="canteiro_numero" name="canteiro_numero" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="setor_id" class="form-label">Setor</label>
+                                <select class="form-select" id="setor_id" name="setor_id" required>
+                                    <option value="">Selecione o Setor</option>
+                                    {% for setor in setores %}
+                                        <option value="{{ setor['id'] }}">{{ setor['nome'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Adicionar Canteiro</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        } else if (tipo === 'setor') {
+            formularioHTML = `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> Novo Setor</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('adicionar_setor') }}">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome do Setor</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Adicionar Setor</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        } else if (tipo === 'defensivo') {
+            formularioHTML = `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-spray-can me-2"></i> Novo Defensivo</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('adicionar_defensivo') }}">
+                            <div class="mb-3">
+                                <label for="nome_comercial" class="form-label">Nome Comercial</label>
+                                <input type="text" class="form-control" id="nome_comercial" name="nome_comercial" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="classe" class="form-label">Classe</label>
+                                <select class="form-select" id="classe" name="classe" required>
+                                    <option value="">Selecione a Classe</option>
+                                    <option value="Fungicida">Fungicida</option>
+                                    <option value="Inseticida">Inseticida</option>
+                                    <option value="Herbicida">Herbicida</option>
+                                    <option value="Fertilizante">Fertilizante</option>
+                                    <option value="Adjuvante">Adjuvante</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Adicionar Defensivo</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        } else if (tipo === 'doenca_praga') {
+            formularioHTML = `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-bug me-2"></i> Nova Doença/Praga</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('adicionar_doenca_praga') }}">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo (Doença/Praga)</label>
+                                <select class="form-select" id="tipo" name="tipo" required>
+                                    <option value="">Selecione o Tipo</option>
+                                    <option value="Doença">Doença</option>
+                                    <option value="Praga">Praga</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição (Opcional)</label>
+                                <textarea class="form-control" id="descricao" name="descricao"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Adicionar Doença/Praga</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        formularioDiv.innerHTML = formularioHTML;
+    }
+</script>
+
+{% endblock %}
